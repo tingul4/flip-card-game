@@ -4,6 +4,18 @@ const Symbols = [
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17991/diamonds.png', // 方塊
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17988/__.png' // 梅花
 ]
+
+const utility = {
+  getRandomNumberArray (count) {
+    const number = Array.from(Array(count).keys())
+    for (let index = number.length - 1; index > 0; index--) {
+      let randomIndex = Math.floor(Math.random() * (index + 1))
+        ;[number[index], number[randomIndex]] = [number[randomIndex], number[index]]
+    }
+    return number
+  }
+}
+
 const view = {
   getCardElement (index) {
     const number = this.transformNumber((index % 13) + 1)
@@ -31,7 +43,8 @@ const view = {
   },
   displayCards () {
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = Array.from(Array(52).keys()).map(index => this.getCardElement(index)).join('')
+    rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join('')
   }
 }
+
 view.displayCards()
