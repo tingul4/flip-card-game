@@ -73,6 +73,17 @@ const view = {
     card.addEventListener('animationend', event =>   event.target.classList.remove('wrong'), { once: true })
     })
   },
+  showGameFinished () {
+    const div = document.createElement('div')
+    div.classList.add('completed')
+    div.innerHTML = `
+      <p>Complete!</p>
+      <p>Score: ${model.score}</p>
+      <p>You've tried: ${model.triedTimes} times</p>
+    `
+    const header = document.querySelector('#header')
+    header.before(div)
+  }
 }
 const model = {
   score: 0,
@@ -108,6 +119,12 @@ const controller = {
           this.currentState = GAME_STATE.CardsMatched
           view.pairCards(...model.revealedCards)
           model.revealedCards = []
+          if (model.score === 260) {
+            console.log('showGameFinished')
+            this.currentState = GAME_STATE.GameFinished
+            view.showGameFinished() 
+            return
+          }
           this.currentState = GAME_STATE.FirstCardAwaits
         } else {
           // 配對失敗
