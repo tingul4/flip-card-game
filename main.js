@@ -1,3 +1,10 @@
+const GAME_STATE = {
+  FirstCardAwaits: 'FirstCardAwaits',
+  SecondCardAwaits: 'SecondCardAwaits',
+  CardsMatchFailed: 'CardsMatchFailed',
+  CardsMatched: 'CardsMatched',
+  GameFinished: 'GameFinished'
+}
 const Symbols = [
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17989/__.png', // 黑桃
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17992/heart.png', // 愛心
@@ -31,11 +38,12 @@ const view = {
         return number
     }
   },
-  displayCards () {
+  displayCards (indexes) {
     const rootElement = document.querySelector('#cards')
-    rootElement.innerHTML = utility.getRandomNumberArray(52).map(index => this.getCardElement(index)).join('')
+    rootElement.innerHTML = indexes.map(index => this.getCardElement(index)).join('')
   },
   flipCard (card) {
+    console.log(card)
     if (card.classList.contains('back')) {
       // 回傳正面
       card.classList.remove('back')
@@ -45,6 +53,15 @@ const view = {
     // 回傳背面
     card.classList.add('back')
     card.innerHTML = null
+  }
+}
+const model = {
+  revealedCards: []
+}
+const controller = {
+  currentState: GAME_STATE.FirstCardAwaits,
+  generateCards () {
+    view.displayCards(utility.getRandomNumberArray(52))
   }
 }
 const utility = {
@@ -57,7 +74,7 @@ const utility = {
     return number
   }
 }
-view.displayCards()
+controller.generateCards()
 document.querySelectorAll('.card').forEach(card => {
   card.addEventListener('click', event => {
     view.flipCard(card)
