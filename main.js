@@ -6,7 +6,7 @@ const GAME_STATE = {
   GameFinished: 'GameFinished'
 }
 const Symbols = [
-  'https://assets-lighthouse.alphacamp.co/uploads/image/file/17989/__.png', // 黑桃
+  'https://assets-lighthouse.alphacamp.co/uploads/image/file/17988/__.png', // 黑桃
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17992/heart.png', // 愛心
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17991/diamonds.png', // 方塊
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17988/__.png' // 梅花
@@ -43,7 +43,6 @@ const view = {
     rootElement.innerHTML = indexes.map(index => this.getCardElement(index)).join('')
   },
   flipCard (card) {
-    console.log(card)
     if (card.classList.contains('back')) {
       // 回傳正面
       card.classList.remove('back')
@@ -62,6 +61,25 @@ const controller = {
   currentState: GAME_STATE.FirstCardAwaits,
   generateCards () {
     view.displayCards(utility.getRandomNumberArray(52))
+  },
+  dispatchCardAction (card) {
+    if (!card.classList.contains('back')) {
+      return
+    }
+    switch (this.currentState) {
+      case GAME_STATE.FirstCardAwaits:
+        view.flipCard(card)
+        model.revealedCards.push(card)
+        this.currentState = GAME_STATE.SecondCardAwaits
+        break
+      case GAME_STATE.SecondCardAwaits:
+        view.flipCard(card)
+        model.revealedCards.push(card)
+        // 判斷配對是否成功
+        break
+    }
+    console.log('this.currentState', this.currentState)
+    console.log('revealedCards', model.revealedCards.map(card => card.dataset.index))
   }
 }
 const utility = {
@@ -77,6 +95,6 @@ const utility = {
 controller.generateCards()
 document.querySelectorAll('.card').forEach(card => {
   card.addEventListener('click', event => {
-    view.flipCard(card)
+    controller.dispatchCardAction(card)
   })
 })
