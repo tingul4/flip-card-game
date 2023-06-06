@@ -141,6 +141,11 @@ const controller = {
     view.flipCards(...model.revealedCards)
     model.revealedCards = []
     controller.currentState = GAME_STATE.FirstCardAwaits
+  },
+  finishGame(cards) {
+    view.renderScore(model.score = 260)
+    view.flipCards(...cards)
+    view.showGameFinished()
   }
 }
 const utility = {
@@ -159,3 +164,5 @@ document.querySelectorAll('.card').forEach(card => {
     controller.dispatchCardAction(card)
   })
 })
+// finish game directly
+// controller.finishGame(document.querySelectorAll('.card'))
