@@ -6,7 +6,7 @@ const GAME_STATE = {
   GameFinished: 'GameFinished'
 }
 const Symbols = [
-  'https://assets-lighthouse.alphacamp.co/uploads/image/file/17988/__.png', // 黑桃
+  'https://assets-lighthouse.alphacamp.co/uploads/image/file/17989/__.png', // 黑桃
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17992/heart.png', // 愛心
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17991/diamonds.png', // 方塊
   'https://assets-lighthouse.alphacamp.co/uploads/image/file/17988/__.png' // 梅花
@@ -52,10 +52,16 @@ const view = {
     // 回傳背面
     card.classList.add('back')
     card.innerHTML = null
+  },
+  pairCard (card) {
+    card.classList.add('paired')
   }
 }
 const model = {
-  revealedCards: []
+  revealedCards: [],
+  isRevealedCardsMatched () {
+    return this.revealedCards[0].dataset.index % 13 === this.revealedCards[1].dataset.index % 13
+  }
 }
 const controller = {
   currentState: GAME_STATE.FirstCardAwaits,
@@ -76,6 +82,23 @@ const controller = {
         view.flipCard(card)
         model.revealedCards.push(card)
         // 判斷配對是否成功
+        if (model.isRevealedCardsMatched()) {
+          // 配對成功
+          this.currentState = GAME_STATE.CardsMatched
+          view.pairCard(model.revealedCards[0])
+          view.pairCard(model.revealedCards[1])
+          model.revealedCards = []
+          this.currentState = GAME_STATE.FirstCardAwaits
+        } else {
+          // 配對失敗
+          this.currentState = GAME_STATE.CardsMatchFailed
+          setTimeout(() => {
+            view.flipCard(model.revealedCards[0])
+            view.flipCard(model.revealedCards[1])
+            model.revealedCards = []
+            this.currentState = GAME_STATE.FirstCardAwaits
+          }, 1000)
+        }
         break
     }
     console.log('this.currentState', this.currentState)
