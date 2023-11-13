@@ -142,8 +142,9 @@ const controller = {
     model.revealedCards = []
     controller.currentState = GAME_STATE.FirstCardAwaits
   },
-  finishGame(cards) {
-    view.renderScore(model.score = 260)
+  finishGame() {
+    const cards = document.querySelectorAll('.card')
+    view.renderScore(model.score)
     view.flipCards(...cards)
     view.showGameFinished()
   }
@@ -158,6 +159,8 @@ const utility = {
     return number
   }
 }
+
+// main
 controller.generateCards()
 document.querySelectorAll('.card').forEach(card => {
   card.addEventListener('click', event => {
@@ -165,4 +168,5 @@ document.querySelectorAll('.card').forEach(card => {
   })
 })
 // finish game directly
-// controller.finishGame(document.querySelectorAll('.card'))
+document.querySelector('.finish-btn')
+  .addEventListener('click', controller.finishGame)
